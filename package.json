@@ -1,0 +1,24 @@
+{
+  "name": "projetos",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node Projetos/app.js",
+    "test": "mocha Projetos/tests/*.test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^5.1.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "chai": "^5.2.1",
+    "jest": "^30.0.5",
+    "mocha": "^11.7.1",
+    "supertest": "^7.1.3"
+  }
+}
