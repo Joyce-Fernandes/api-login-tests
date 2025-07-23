@@ -109,6 +109,7 @@ Retorna o lembrete de senha do usuário.
 
 ## Documentação Swagger
 Acesse a documentação interativa em: [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
+<img width="850" height="530" alt="Swagger" src="https://github.com/user-attachments/assets/95f0568d-1136-4a0f-919c-acbb5d418d98" />
 
 ## Testes Automatizados
 
@@ -170,6 +171,7 @@ Sinta-se à vontade para abrir issues ou pull requests para sugerir melhorias, n
 
 ## Resultado dos Testes
 **Todos os testes estão passando com sucesso:**
+<img width="850" height="530" alt="TestsAPI" src="https://github.com/user-attachments/assets/8cbaa571-a66e-4850-9ea5-111640da95a3" />
 
 Testes da API de Login
 
