@@ -252,7 +252,7 @@ Os usuários estão definidos manualmente em memória no arquivo src/services/lo
 
 ## Resultado dos Testes
 **Todos os testes estão passando com sucesso:**
-<img width="850" height=<img width="1515" height="836" alt="mocha" src="https://github.com/user-attachments/assets/2c13a837-1fe8-4675-b3db-2b8f5dc26eb3" />
+<img width="1515" height="836" alt="mocha" src="https://github.com/user-attachments/assets/2c13a837-1fe8-4675-b3db-2b8f5dc26eb3" />
 
 Testes da API de Login
 
