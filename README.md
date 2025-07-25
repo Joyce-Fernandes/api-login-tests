@@ -249,10 +249,6 @@ Os usuários estão definidos manualmente em memória no arquivo src/services/lo
 - **Porta ocupada:**
   - Altere a porta usando a variável de ambiente `PORT`.
 
-## Contribuição
-
-Sinta-se à vontade para abrir issues ou pull requests para sugerir melhorias, novos testes ou correções!
-  
 
 ## Resultado dos Testes
 **Todos os testes estão passando com sucesso:**
@@ -275,6 +271,9 @@ Testes da API de Login
     ✔ deve retornar not_found para usuário inexistente
 
   10 passing (56ms)
----
 
+## Contribuição
+
+Sinta-se à vontade para abrir issues ou pull requests para sugerir melhorias, novos testes ou correções!
+ 
 Projeto para fins didáticos. Desenvolvido com foco em clareza, testes e documentação. 
