@@ -50,7 +50,7 @@ Projetos/
 - Acesse `http://localhost:3000/` para utilizar a interface web.
 - Permite simular login, lembrete de senha, bloqueio e desbloqueio de usuário.
 - Validação de campos e feedback visual.
-<img width="839" height="688" alt="Captura de pantalla 2025-07-25 164400" src="https://github.com/user-attachments/assets/1549bb4d-fe67-455f-8dc5-4bd4fbfcd548" />
+<img width="650" height="688" alt="Captura de pantalla 2025-07-25 164400" src="https://github.com/user-attachments/assets/1549bb4d-fe67-455f-8dc5-4bd4fbfcd548" />
 
 ## Dependências
 
