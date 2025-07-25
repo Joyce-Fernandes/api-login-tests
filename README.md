@@ -54,12 +54,19 @@ Projetos/
 
 ## Dependências
 
-- [Express](https://expressjs.com/)
-- [swagger-ui-express](https://www.npmjs.com/package/swagger-ui-express)
-- [swagger-jsdoc](https://www.npmjs.com/package/swagger-jsdoc)
-- [Mocha](https://mochajs.org/) (dev)
-- [Chai](https://www.chaijs.com/) (dev)
-- [Supertest](https://github.com/ladjs/supertest) (dev)
+### Produção
+- **express**: Framework web para Node.js, usado para criar a API e servir o frontend.
+- **cors**: Middleware para habilitar CORS (Cross-Origin Resource Sharing).
+- **jsonwebtoken**: Para geração e validação de tokens JWT (autenticação).
+- **swagger-jsdoc**: Gera documentação Swagger a partir de comentários JSDoc.
+- **swagger-ui-express**: Serve a interface Swagger UI para documentação interativa da API.
+
+### Desenvolvimento
+- **mocha**: Framework de testes para Node.js.
+- **chai**: Biblioteca de asserções para testes (usada com Mocha).
+- **supertest**: Testes de integração para APIs Express.
+- **jest**: Outro framework de testes (não obrigatório se já usa Mocha/Chai).
+- **mochawesome**: Gera relatórios HTML bonitos para os testes do Mocha.
 
 ## Como rodar o projeto
 
