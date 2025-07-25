@@ -177,8 +177,8 @@ Os usuários estão definidos manualmente em memória no arquivo src/services/lo
 
 ```const users = [
   {
-    email: 'admin@admin.com',
-    senha: '123456',
+    email: 'joao@example.com',
+    senha: '1234',
     reminder: 'Seu número favorito',
     attempts: 0,
     blocked: false
