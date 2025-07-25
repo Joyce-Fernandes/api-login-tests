@@ -1,4 +1,8 @@
-# API de Gestão de Login
+#  🚀 Mentoria 2.0 Desafio 3 grupo 3
+
+
+
+## API de Gestão de Login
 
 Esta API foi desenvolvida para fins de estudo de testes de software. Ela simula um sistema de login com bloqueio após tentativas inválidas, lembrete de senha, desbloqueio de usuário, autenticação JWT e documentação via Swagger. Inclui também um frontend simples para testes e geração de relatórios automatizados. **Não utiliza banco de dados, apenas armazenamento em memória.**
 
