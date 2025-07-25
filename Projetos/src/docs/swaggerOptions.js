@@ -15,6 +15,16 @@ module.exports = {
         description: 'Servidor local',
       },
     ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    security: [{ bearerAuth: [] }],
   },
-  apis: [path.join(__dirname, '../routes/*.js')],
+  apis: ['src/routes/*.js'],
 };

@@ -4,14 +4,17 @@
   "main": "index.js",
   "scripts": {
     "dev": "node Projetos/app.js",
-    "test": "mocha Projetos/tests/*.test.js"
+    "test": "mocha Projetos/tests/*.test.js --reporter mochawesome --reporter-options reportFilename=relatorio",
+    "test:report": "npm test && start mochawesome-report/relatorio.html"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
   },
@@ -19,6 +22,7 @@
     "chai": "^5.2.1",
     "jest": "^30.0.5",
     "mocha": "^11.7.1",
+    "mochawesome": "^7.1.3",
     "supertest": "^7.1.3"
   }
 }

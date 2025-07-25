@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login API</title>
+  <style>
+    body {
+      background: #f2f4f8;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: white;
+      padding: 2rem 3rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #555;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 0.6rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.7rem;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .message {
+      margin-top: 1rem;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .reminder-link {
+      margin-top: 0.5rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #007bff;
+      cursor: pointer;
+    }
+
+    .reminder-link:hover {
+      text-decoration: underline;
+    }
+
+    #logoutBtn {
+      display: none;
+      margin-top: 1rem;
+      background-color: #dc3545;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <form id="loginForm">
+      <h1>Login</h1>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" required />
+
+      <label for="password">Senha:</label>
+      <input type="password" id="password" required />
+
+      <button type="submit">Entrar</button>
+
+      <div class="reminder-link" onclick="getReminder()">Esqueci a senha</div>
+      <button id="logoutBtn" type="button">Logout</button>
+
+      <div class="message" id="msg"></div>
+      <div class="message" id="protected"></div>
+    </form>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:3000/login';
+
+    const form = document.getElementById('loginForm');
+    const msg = document.getElementById('msg');
+    const protectedDiv = document.getElementById('protected');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    form.onsubmit = async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value.trim();
+  msg.innerHTML = '';
+  protectedDiv.innerHTML = ''; // ← limpa rota protegida ao tentar novo login
+  msg.style.color = 'black';
+
+
+      if (!email || !password) {
+        msg.innerHTML = 'Preencha todos os campos.';
+        msg.style.color = 'red';
+        return;
+      }
+
+      form.querySelector('button[type="submit"]').disabled = true;
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, senha: password })
+        });
+
+        const data = await res.json();
+
+        if (res.status === 200) {
+          msg.innerHTML = '✅ Login realizado com sucesso!';
+          msg.style.color = 'green';
+          localStorage.setItem('token', data.token);
+          loadProtectedRoute();
+          scheduleTokenRenewal();
+        } else if (res.status === 401) {
+          msg.innerHTML = '⚠️ Senha incorreta.';
+          msg.style.color = 'orange';
+        } else if (res.status === 403) {
+          msg.innerHTML = '🚫 Usuário bloqueado após 3 tentativas.';
+          msg.style.color = 'red';
+        } else if (res.status === 404) {
+          msg.innerHTML = '❌ Usuário não encontrado.';
+          msg.style.color = 'red';
+        } else {
+          msg.innerHTML = '❌ Erro desconhecido.';
+          msg.style.color = 'gray';
+        }
+      } catch (err) {
+        msg.innerHTML = '❌ Erro ao conectar com a API.';
+        msg.style.color = 'red';
+      } finally {
+        form.querySelector('button[type="submit"]').disabled = false;
+      }
+    };
+
+    async function getReminder() {
+      const email = document.getElementById('email').value.trim();
+      msg.innerHTML = '';
+
+      if (!email) {
+        msg.innerHTML = '🔎 Informe seu email para recuperar a senha.';
+        msg.style.color = 'blue';
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_URL}/reminder`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+
+        const data = await res.json();
+        if (res.status === 200 && data.message) {
+          msg.innerHTML = `🔐 ${data.message}`;
+          msg.style.color = 'purple';
+        } else {
+          msg.innerHTML = '❌ Email não encontrado.';
+          msg.style.color = 'gray';
+        }
+      } catch (err) {
+        msg.innerHTML = '❌ Erro ao buscar lembrete.';
+        msg.style.color = 'red';
+      }
+    }
+
+    async function loadProtectedRoute() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        logoutBtn.style.display = 'none';
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_URL}/protegida`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        const data = await res.json();
+        if (res.ok && data.message) {
+          protectedDiv.innerHTML = `🔒 Acesso autorizado: ${data.message}`;
+          protectedDiv.style.color = 'darkgreen';
+          logoutBtn.style.display = 'block';
+        } else {
+          protectedDiv.innerHTML = '🔒 Token inválido.';
+          protectedDiv.style.color = 'gray';
+          logoutBtn.style.display = 'none';
+        }
+      } catch (err) {
+        protectedDiv.innerHTML = '❌ Erro ao acessar rota protegida.';
+        protectedDiv.style.color = 'darkred';
+        logoutBtn.style.display = 'none';
+      }
+    }
+
+    logoutBtn.onclick = () => {
+      localStorage.removeItem('token');
+      protectedDiv.innerHTML = '';
+      msg.innerHTML = 'Você saiu.';
+      msg.style.color = 'blue';
+      logoutBtn.style.display = 'none';
+    };
+
+    function parseJwt(token) {
+      try {
+        return JSON.parse(atob(token.split('.')[1]));
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function scheduleTokenRenewal() {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const payload = parseJwt(token);
+      if (!payload || !payload.exp) return;
+
+      const expiresAt = payload.exp * 1000;
+      const now = Date.now();
+      const delay = expiresAt - now - 60000;
+
+      if (delay <= 0) {
+        renewToken();
+      } else {
+        setTimeout(renewToken, delay);
+      }
+    }
+
+    async function renewToken() {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      try {
+        const res = await fetch('http://localhost:3000/refresh-token', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.token) {
+          localStorage.setItem('token', data.token);
+          scheduleTokenRenewal();
+          msg.innerHTML = '🔄 Token renovado automaticamente.';
+          msg.style.color = 'green';
+        } else {
+          msg.innerHTML = '⚠️ Token expirado, faça login novamente.';
+          msg.style.color = 'red';
+          logoutBtn.click(); // força logout
+        }
+      } catch (err) {
+        msg.innerHTML = '❌ Erro ao renovar token.';
+        msg.style.color = 'red';
+      }
+    }
+
+    window.onload = () => {
+      loadProtectedRoute();
+      scheduleTokenRenewal();
+    };
+  </script>
+</body>
+</html>

@@ -1,69 +1,47 @@
 const request = require('supertest');
 const app = require('../app');
+const { expect } = require('chai');
 
 describe('Testes da API de Login', () => {
-  it('POST /login deve retornar 200 com mensagem de sucesso', (done) => {
-    request(app)
+  it('POST /login deve retornar 200 com mensagem de sucesso', async () => {
+    const res = await request(app)
       .post('/login')
-      .send({ email: 'admin@admin.com', senha: '123456' })
-      .expect(200)
-      .expect(res => {
-        if (!res.body.message.includes('sucesso')) {
-          throw new Error('Mensagem de sucesso não retornada');
-        }
-      })
-      .end(done);
+      .send({ email: 'joao@example.com', password: '1234' });
+    expect(res.status).to.equal(200);
+    expect(res.body).to.have.property('status', 'success');
+    expect(res.body).to.have.property('token');
   });
 
-  it('POST /login com credenciais inválidas deve retornar 401', (done) => {
-    request(app)
+  it('POST /login com credenciais inválidas deve retornar 401', async () => {
+    const res = await request(app)
       .post('/login')
-      .send({ email: 'admin@admin.com', senha: 'errada' })
-      .expect(401)
-      .expect(res => {
-        if (!res.body.message.includes('inválidos')) {
-          throw new Error('Mensagem de erro incorreta');
-        }
-      })
-      .end(done);
+      .send({ email: 'joao@example.com', password: 'errada' });
+    expect(res.status).to.equal(401);
+    expect(res.body).to.have.property('status', 'invalid');
   });
 
-  it('POST /login com email inexistente deve retornar 404', (done) => {
-    request(app)
+  it('POST /login com email inexistente deve retornar 404', async () => {
+    const res = await request(app)
       .post('/login')
-      .send({ email: 'naoexiste@email.com', senha: '123456' })
-      .expect(404)
-      .expect(res => {
-        if (!res.body.message.includes('não cadastrado')) {
-          throw new Error('Mensagem de usuário não encontrado incorreta');
-        }
-      })
-      .end(done);
+      .send({ email: 'naoexiste@example.com', password: '1234' });
+    expect(res.status).to.equal(404);
+    expect(res.body).to.have.property('status', 'not_found');
   });
 
-  it('POST /login/reminder deve retornar lembrete de senha', (done) => {
-    request(app)
+  it('POST /login/reminder deve retornar lembrete de senha', async () => {
+    const res = await request(app)
       .post('/login/reminder')
-      .send({ email: 'admin@admin.com' })
-      .expect(200)
-      .expect(res => {
-        if (!res.body.message.includes('Lembrete de senha')) {
-          throw new Error('Mensagem de lembrete incorreta');
-        }
-      })
-      .end(done);
+      .send({ email: 'joao@example.com' });
+    expect(res.status).to.equal(200);
+    expect(res.body).to.have.property('status', 'success');
+    expect(res.body).to.have.property('reminder');
   });
 
-  it('POST /login/reminder com email inexistente deve retornar 404', (done) => {
-    request(app)
+  it('POST /login/reminder com email inexistente deve retornar 404', async () => {
+    const res = await request(app)
       .post('/login/reminder')
-      .send({ email: 'naoexiste@email.com' })
-      .expect(404)
-      .expect(res => {
-        if (!res.body.message.includes('não cadastrado')) {
-          throw new Error('Mensagem incorreta para lembrete de usuário inexistente');
-        }
-      })
-      .end(done);
+      .send({ email: 'naoexiste@example.com' });
+    expect(res.status).to.equal(404);
+    expect(res.body).to.have.property('status', 'not_found');
   });
 });

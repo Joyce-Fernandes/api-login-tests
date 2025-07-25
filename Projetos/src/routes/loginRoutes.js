@@ -1,63 +1,101 @@
 const express = require('express');
 const router = express.Router();
-const loginController = require('../controllers/loginController');
+const authController = require('../controllers/authController');
+const authMiddleware = require('../middlewares/authMiddleware');
+
+/**
+ * @swagger
+ * /login/unlock:
+ *   post:
+ *     tags:
+ *       - Autenticacao
+ *     summary: Desbloqueia o usuario
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Usuario desbloqueado com sucesso
+ *       404:
+ *         description: Usuario nao encontrado
+ */
+router.post('/unlock', authController.unlock);
+
+/**
+ * @swagger
+ * /login/protegida:
+ *   get:
+ *     tags:
+ *       - Autenticacao
+ *     summary: Rota protegida JWT
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Acesso autorizado
+ *       401:
+ *         description: Token invalido
+ */
+router.get('/protegida', authMiddleware, (req, res) => {
+  res.status(200).json({
+    message: `Bem-vindo, ${req.user.email}! Esta é uma rota protegida.`,
+  });
+});
 
 /**
  * @swagger
  * /login:
  *   post:
- *     summary: Realiza o login do usuário
- *     tags:
- *       - Autenticação
+ *     summary: Efetua login
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - email
- *               - senha
  *             properties:
  *               email:
  *                 type: string
- *                 example: usuario@email.com
  *               senha:
  *                 type: string
- *                 example: 123456
  *     responses:
  *       200:
- *         description: Login realizado com sucesso
+ *         description: Login bem-sucedido
  *       401:
  *         description: Credenciais inválidas
+ *       403:
+ *         description: Usuário bloqueado
+ *       404:
+ *         description: Usuário não encontrado
  */
-router.post('/', loginController.login);
+router.post('/', authController.login);
 
 /**
  * @swagger
  * /login/reminder:
  *   post:
- *     summary: Envia lembrete de senha para o e-mail informado
- *     tags:
- *       - Autenticação
+ *     summary: Retorna o lembrete de senha
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - email
  *             properties:
  *               email:
  *                 type: string
- *                 example: usuario@email.com
  *     responses:
  *       200:
- *         description: Lembrete de senha enviado
+ *         description: Lembrete retornado
  *       404:
  *         description: Usuário não encontrado
  */
-router.post('/reminder', loginController.passwordReminder);
+router.post('/reminder', authController.passwordReminder);
 
 module.exports = router;
