@@ -1,6 +1,6 @@
 # API de Gestão de Login
 
-Esta API foi desenvolvida para fins de estudo de testes de software. Ela simula um sistema de login com bloqueio após tentativas inválidas, lembrete de senha e documentação via Swagger. **Não utiliza banco de dados, apenas armazenamento em memória.**
+Esta API foi desenvolvida para fins de estudo de testes de software. Ela simula um sistema de login com bloqueio após tentativas inválidas, lembrete de senha, desbloqueio de usuário, autenticação JWT e documentação via Swagger. Inclui também um frontend simples para testes e geração de relatórios automatizados. **Não utiliza banco de dados, apenas armazenamento em memória.**
 
 ## Funcionalidades
 
@@ -9,7 +9,48 @@ Esta API foi desenvolvida para fins de estudo de testes de software. Ela simula 
 - Lembrete de senha
 - Resposta para usuário não cadastrado
 - Documentação Swagger
+- Relatorios de testes mochawesome-report
 - Testes automatizados com Mocha, Chai e Supertest
+
+## Estrutura do Projeto
+
+```
+Projetos/
+├── app.js                  # Arquivo principal do servidor Express
+├── package.json            # Dependências e scripts
+├── README.md               # Documentação do projeto
+├── public/                 # Frontend HTML/JS
+│   └── index.html          # Interface web para login, lembrete e desbloqueio
+├── src/
+│   ├── controllers/
+│   │   └── authController.js      # Lógica dos endpoints de autenticação
+│   ├── middlewares/
+│   │   └── authMiddleware.js      # Middleware de autenticação JWT
+│   ├── routes/
+│   │   ├── loginRoutes.js         # Rotas principais da API
+│   │   └── swaggerTestRoutes.js   # Rota de teste para Swagger
+│   ├── services/
+│   │   ├── loginService.js        # Lógica de login, bloqueio, lembrete, desbloqueio
+│   │   └── users.js               # Usuários em memória
+│   ├── docs/
+│   │   └── swaggerOptions.js      # Configuração do Swagger
+│   └── utils/
+│       └── jwtUtils.js            # Utilitário para geração/validação de JWT
+├── tests/
+│   ├── login.test.js              # Testes de integração das rotas
+│   └── loginService.test.js       # Testes unitários do serviço de login
+├── mochawesome-report/            # Relatórios HTML dos testes
+│   └── relatorio.html
+└── .github/
+    └── workflows/
+        └── test.yml               # CI para rodar testes automaticamente
+```
+
+## Frontend
+- Acesse `http://localhost:3000/` para utilizar a interface web.
+- Permite simular login, lembrete de senha, bloqueio e desbloqueio de usuário.
+- Validação de campos e feedback visual.
+<img width="839" height="688" alt="Captura de pantalla 2025-07-25 164400" src="https://github.com/user-attachments/assets/1549bb4d-fe67-455f-8dc5-4bd4fbfcd548" />
 
 ## Dependências
 
@@ -109,7 +150,7 @@ Retorna o lembrete de senha do usuário.
 
 ## Documentação Swagger
 Acesse a documentação interativa em: [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
-<img width="850" height="530" alt="Swagger" src="https://github.com/user-attachments/assets/95f0568d-1136-4a0f-919c-acbb5d418d98" />
+<img width="755" height="691" alt="Captura de pantalla 2025-07-25 143705" src="https://github.com/user-attachments/assets/b1308703-d4d7-42ba-83e7-77b3e44c13c3" />
 
 ## Testes Automatizados
 
@@ -153,6 +194,43 @@ Os usuários estão definidos manualmente em memória no arquivo src/services/lo
 
 ```
 
+## JWT
+- O login bem-sucedido retorna um token JWT.
+- Use o token para acessar rotas protegidas, enviando no header:
+  ```
+  Authorization: Bearer <token>
+  ```
+
+## Fluxo de bloqueio e desbloqueio
+- Após 3 tentativas inválidas, o usuário é bloqueado.
+- Para desbloquear, envie um POST para `/login/unlock` com o email:
+  ```json
+  { "email": "joao@example.com" }
+  ```
+- O usuário poderá tentar logar novamente normalmente.
+
+## Testes Automatizados e Relatórios
+- Testes unitários e de integração em `/tests`.
+- Execute com:
+  ```bash
+  npm test
+  ```
+- Relatório HTML gerado em `mochawesome-report/relatorio.html`.
+- Para abrir automaticamente:
+  ```bash
+  npm run test:report
+  ```
+
+## Integração Contínua (CI)
+- Workflow GitHub Actions em `.github/workflows/test.yml`.
+- Roda os testes automaticamente a cada push ou pull request na branch `main`.
+
+## Observações e Boas Práticas
+- Usuários estão em memória, definidos em `src/services/users.js`.
+- Projeto segue boas práticas de código limpo (Clean Code).
+- Estrutura modularizada para facilitar manutenção e testes.
+- Documentação e exemplos claros para facilitar o estudo e uso.
+
 ## Dicas e Resolução de Problemas
 - **Swagger não abre:**
   - Verifique se a pasta `src/docs` existe fisicamente e contém os arquivos `.js` de documentação.
@@ -171,7 +249,7 @@ Sinta-se à vontade para abrir issues ou pull requests para sugerir melhorias, n
 
 ## Resultado dos Testes
 **Todos os testes estão passando com sucesso:**
-<img width="850" height="530" alt="TestsAPI" src="https://github.com/user-attachments/assets/8cbaa571-a66e-4850-9ea5-111640da95a3" />
+<img width="850" height=<img width="1515" height="836" alt="mocha" src="https://github.com/user-attachments/assets/2c13a837-1fe8-4675-b3db-2b8f5dc26eb3" />
 
 Testes da API de Login
 
